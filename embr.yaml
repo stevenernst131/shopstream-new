@@ -10,14 +10,8 @@ database:
   seed: "psql $DATABASE_URL -f db/seed.sql"
 
 dependencies:
-  db:
+  - name: db
     type: postgres
-    required: true
-    description: Primary application database
-    provides:
-      - name: DATABASE_URL
-        secret: true
-        scope: all
 
 static:
   spaFallback: true
