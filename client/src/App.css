@@ -201,6 +201,69 @@ tr:hover td{background:var(--bg-hover)}
 .vgrad-4{background:linear-gradient(135deg,#f97316,#eab308)}
 .vgrad-5{background:linear-gradient(135deg,#8b5cf6,#6366f1)}
 .vgrad-6{background:linear-gradient(135deg,#22c55e,#10b981)}
+
+/* ===== Compare Button on Product Card ===== */
+.compare-btn{
+  display:block;width:100%;margin-top:8px;padding:5px 0;
+  background:var(--bg-input);color:var(--text-dim);border:1px solid var(--border);
+  border-radius:var(--radius-sm);font-size:12px;font-weight:500;cursor:pointer;
+  transition:all var(--transition);
+}
+.compare-btn:hover:not(:disabled){background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
+.compare-btn.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent);font-weight:600}
+.compare-btn:disabled{opacity:.35;cursor:not-allowed}
+.product-card.compare-selected{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* ===== Compare Tray ===== */
+.compare-tray{
+  position:fixed;bottom:0;left:0;right:0;z-index:900;
+  background:var(--bg-card);border-top:1px solid var(--border);
+  box-shadow:0 -4px 20px rgba(0,0,0,.25);
+  animation:traySlideUp .25s ease-out;
+}
+@keyframes traySlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.compare-tray-inner{
+  max-width:1200px;margin:0 auto;padding:12px 20px;
+  display:flex;align-items:center;gap:16px;
+}
+.compare-tray-items{display:flex;gap:12px;flex:1;overflow-x:auto}
+.compare-tray-item{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:6px 10px;white-space:nowrap;
+}
+.compare-tray-thumb{
+  width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.compare-tray-name{font-size:12px;font-weight:500;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.compare-tray-remove{
+  background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;padding:2px;
+  line-height:1;
+}
+.compare-tray-remove:hover{color:var(--red)}
+.compare-tray-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.compare-tray-count{font-size:12px;color:var(--text-muted);font-weight:500}
+
+/* ===== Compare Page ===== */
+.compare-page{padding:0 0 40px}
+.compare-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.compare-table-wrap{overflow-x:auto}
+.compare-table{width:100%;border-collapse:collapse;font-size:13px}
+.compare-table th,.compare-table td{
+  padding:12px 16px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top;
+}
+.compare-table th{
+  width:120px;font-weight:600;color:var(--text-dim);background:var(--bg-sidebar);
+  white-space:nowrap;position:sticky;left:0;z-index:1;
+}
+.compare-table td{min-width:180px;background:var(--bg-card)}
+.compare-table tr.compare-diff td{background:var(--accent-bg)}
+.compare-table .compare-empty{background:transparent;border:none}
+.compare-product-img{
+  width:80px;height:80px;border-radius:var(--radius);display:flex;align-items:center;
+  justify-content:center;font-size:32px;margin:0 auto;
+}
 .vgrad-7{background:linear-gradient(135deg,#3b82f6,#6366f1)}
 .vgrad-8{background:linear-gradient(135deg,#14b8a6,#22c55e)}
 .vgrad-9{background:linear-gradient(135deg,#f59e0b,#f97316)}

@@ -61,6 +61,16 @@ exports.getProductReviews = (productId) => pool.query(`
   WHERE r.product_id = $1 ORDER BY r.created_at DESC LIMIT 20
 `, [productId]);
 
+// Compare (batch fetch by IDs)
+exports.getProductsByIds = (ids) => pool.query(`
+  SELECT p.*, v.name AS vendor_name, v.slug AS vendor_slug,
+         cat.name AS category_name, cat.icon AS category_icon
+  FROM products p
+  JOIN vendors v ON v.id = p.vendor_id
+  JOIN categories cat ON cat.id = p.category_id
+  WHERE p.id = ANY($1) AND p.is_active = TRUE
+`, [ids]);
+
 // Search
 exports.searchProducts = (query, limit) => pool.query(`
   SELECT p.id, p.name, p.slug, p.price_cents, p.rating_avg, p.review_count,

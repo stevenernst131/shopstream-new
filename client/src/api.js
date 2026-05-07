@@ -23,6 +23,9 @@ export const fetchProducts = (params) => api('/api/products?' + new URLSearchPar
 export const fetchProduct = (id) => api(`/api/products/${id}`);
 export const searchProducts = (q, limit = 20) => api(`/api/products/search?q=${encodeURIComponent(q)}&limit=${limit}`);
 
+// Compare
+export const fetchCompareProducts = (ids) => api(`/api/products/compare?ids=${ids.join(',')}`);
+
 // Categories
 export const fetchCategories = () => api('/api/categories');
 

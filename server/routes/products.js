@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getProducts, getProductById, getProductReviews, searchProducts } = require('../db/queries');
+const { getProducts, getProductById, getProductReviews, searchProducts, getProductsByIds } = require('../db/queries');
 
 const router = Router();
 
@@ -37,6 +37,23 @@ router.get('/', async (req, res) => {
     const total = parseInt(countQ.rows[0].count);
 
     res.json({ products: rows.rows, total, page, limit, pages: Math.ceil(total / limit) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/compare', async (req, res) => {
+  try {
+    const idsParam = req.query.ids || '';
+    const ids = idsParam.split(',').map(Number).filter((n) => n > 0);
+    if (ids.length < 2 || ids.length > 3) {
+      return res.status(400).json({ error: 'Provide 2 or 3 product IDs' });
+    }
+    const result = await getProductsByIds(ids);
+    // Preserve requested order
+    const byId = Object.fromEntries(result.rows.map((r) => [r.id, r]));
+    const products = ids.map((id) => byId[id]).filter(Boolean);
+    res.json({ products });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
