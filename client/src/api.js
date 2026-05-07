@@ -21,6 +21,7 @@ export const fetchDashboard = () => api('/api/dashboard');
 // Products
 export const fetchProducts = (params) => api('/api/products?' + new URLSearchParams(params));
 export const fetchProduct = (id) => api(`/api/products/${id}`);
+export const fetchRelatedProducts = (id, limit = 6) => api(`/api/products/${id}/related?limit=${limit}`);
 export const searchProducts = (q, limit = 20) => api(`/api/products/search?q=${encodeURIComponent(q)}&limit=${limit}`);
 
 // Categories

@@ -61,6 +61,19 @@ exports.getProductReviews = (productId) => pool.query(`
   WHERE r.product_id = $1 ORDER BY r.created_at DESC LIMIT 20
 `, [productId]);
 
+exports.getRelatedProducts = (productId, categoryId, limit) => pool.query(`
+  SELECT p.id, p.name, p.slug, p.price_cents, p.compare_price_cents,
+         p.rating_avg, p.review_count, p.stock_qty, p.image_url,
+         v.name AS vendor_name, cat.name AS category_name, cat.icon AS category_icon,
+         p.category_id
+  FROM products p
+  JOIN vendors v ON v.id = p.vendor_id
+  JOIN categories cat ON cat.id = p.category_id
+  WHERE p.is_active = TRUE AND p.category_id = $1 AND p.id != $2
+  ORDER BY p.rating_avg DESC, p.review_count DESC
+  LIMIT $3
+`, [categoryId, productId, limit]);
+
 // Search
 exports.searchProducts = (query, limit) => pool.query(`
   SELECT p.id, p.name, p.slug, p.price_cents, p.rating_avg, p.review_count,
