@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getProducts, getProductById, getProductReviews, searchProducts } = require('../db/queries');
+const { getProducts, getProductById, getProductReviews, getRelatedProducts, searchProducts } = require('../db/queries');
 
 const router = Router();
 
@@ -60,8 +60,12 @@ router.get('/:id', async (req, res) => {
     const product = await getProductById(id);
     if (!product.rows.length) return res.status(404).json({ error: 'Product not found' });
 
-    const reviews = await getProductReviews(id);
-    res.json({ product: product.rows[0], reviews: reviews.rows });
+    const p = product.rows[0];
+    const [reviews, related] = await Promise.all([
+      getProductReviews(id),
+      getRelatedProducts(id, p.category_id, 6),
+    ]);
+    res.json({ product: p, reviews: reviews.rows, relatedProducts: related.rows });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -12,7 +12,7 @@ const gradClass = (id) => 'grad-' + ((id % 10) + 1);
 const stockClass = (qty) => qty > 20 ? 'stock-ok' : qty > 0 ? 'stock-low' : 'stock-out';
 const stockLabel = (qty) => qty > 20 ? 'In Stock' : qty > 0 ? `${qty} left` : 'Out of Stock';
 
-export default function Products({ initialSearch }) {
+export default function Products({ initialSearch, onViewProduct }) {
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState('');
   const [sort, setSort] = useState('newest');
@@ -103,7 +103,7 @@ export default function Products({ initialSearch }) {
             key={p.id}
             product={p}
             categoryIcon={(cats.find((c) => c.id === p.category_id) || {}).icon}
-            onClick={() => showProduct(p.id)}
+            onClick={() => onViewProduct ? onViewProduct(p.id) : showProduct(p.id)}
           />
         ))}
       </div>
