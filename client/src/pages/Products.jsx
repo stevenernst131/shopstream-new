@@ -1,18 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchProducts, fetchCategories, fetchProduct } from '../api';
+import { fetchProducts, fetchCategories } from '../api';
 import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
-import Panel from '../components/Panel';
-import StarRating from '../components/StarRating';
 
 const fmt = (cents) => '$' + (cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtNum = (n) => Number(n).toLocaleString('en-US');
-const fmtDate = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-const gradClass = (id) => 'grad-' + ((id % 10) + 1);
-const stockClass = (qty) => qty > 20 ? 'stock-ok' : qty > 0 ? 'stock-low' : 'stock-out';
-const stockLabel = (qty) => qty > 20 ? 'In Stock' : qty > 0 ? `${qty} left` : 'Out of Stock';
 
-export default function Products({ initialSearch }) {
+export default function Products({ initialSearch, onProductClick }) {
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState('');
   const [sort, setSort] = useState('newest');
@@ -21,8 +15,6 @@ export default function Products({ initialSearch }) {
   const [categories, setCategories] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [panelOpen, setPanelOpen] = useState(false);
-  const [panelData, setPanelData] = useState(null);
 
   // Reset search from parent
   useEffect(() => {
@@ -51,14 +43,6 @@ export default function Products({ initialSearch }) {
   }, [page, category, sort, search]);
 
   useEffect(() => { load(); }, [load]);
-
-  const showProduct = async (id) => {
-    try {
-      const result = await fetchProduct(id);
-      setPanelData(result);
-      setPanelOpen(true);
-    } catch {}
-  };
 
   if (loading && !data) return <div className="loading-screen"><div className="spinner" /><div>Loading...</div></div>;
   if (error) return (
@@ -103,50 +87,11 @@ export default function Products({ initialSearch }) {
             key={p.id}
             product={p}
             categoryIcon={(cats.find((c) => c.id === p.category_id) || {}).icon}
-            onClick={() => showProduct(p.id)}
+            onClick={() => onProductClick(p.id)}
           />
         ))}
       </div>
       <Pagination page={data.page} pages={data.pages} total={data.total} onNavigate={(p) => setPage(p)} />
-
-      <Panel open={panelOpen} onClose={() => setPanelOpen(false)}>
-        {panelData && <ProductDetail data={panelData} categories={cats} />}
-      </Panel>
-    </>
-  );
-}
-
-function ProductDetail({ data: { product: p, reviews }, categories }) {
-  const catIcon = (categories.find((c) => c.id === p.category_id) || {}).icon || '📦';
-  return (
-    <>
-      <div className={`product-img ${gradClass(p.id)}`} style={{ height: 200, borderRadius: 'var(--radius)', marginBottom: 16, fontSize: 64 }}>{catIcon}</div>
-      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>{p.name}</h2>
-      <div style={{ fontSize: 13, color: 'var(--text-dim)', marginBottom: 12 }}>by {p.vendor_name} · {p.category_name}</div>
-      <div style={{ marginBottom: 16 }}>
-        <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--accent)' }}>{fmt(p.price_cents)}</span>
-        {p.compare_price_cents && (
-          <span style={{ fontSize: 14, color: 'var(--text-muted)', textDecoration: 'line-through', marginLeft: 8 }}>{fmt(p.compare_price_cents)}</span>
-        )}
-      </div>
-      <div style={{ display: 'flex', gap: 16, marginBottom: 16, fontSize: 13 }}>
-        <span><strong>Rating:</strong> <StarRating rating={p.rating_avg} /> {Number(p.rating_avg).toFixed(1)} ({p.review_count})</span>
-        <span><strong>Stock:</strong> <span className={`stock-badge ${stockClass(p.stock_qty)}`}>{stockLabel(p.stock_qty)}</span></span>
-      </div>
-      <div style={{ fontSize: 13, color: 'var(--text-dim)', marginBottom: 20, lineHeight: 1.7 }}>{p.description || 'No description available.'}</div>
-      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>SKU: {p.sku || 'N/A'}</div>
-      <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12 }}>Reviews ({reviews.length})</h3>
-      {reviews.length ? reviews.map((r) => (
-        <div key={r.id} className="review-item">
-          <div className="review-header">
-            <span className="review-author">{r.first_name} {r.last_name} {r.is_verified && <span style={{ color: 'var(--green)', fontSize: 11 }}>✓ Verified</span>}</span>
-            <span className="review-date">{fmtDate(r.created_at)}</span>
-          </div>
-          <div style={{ marginBottom: 4 }}><StarRating rating={r.rating} /></div>
-          {r.title && <div className="review-title">{r.title}</div>}
-          <div className="review-body">{r.body}</div>
-        </div>
-      )) : <div style={{ padding: '20px 0', color: 'var(--text-muted)', fontSize: 13 }}>No reviews yet</div>}
     </>
   );
 }
