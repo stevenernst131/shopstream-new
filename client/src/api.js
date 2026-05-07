@@ -34,6 +34,8 @@ export const createOrder = (data) => apiPost('/api/orders', data);
 // Vendors
 export const fetchVendors = () => api('/api/vendors');
 export const fetchVendor = (id) => api(`/api/vendors/${id}`);
+export const fetchVendorScorecards = () => api('/api/vendors/scorecards');
+export const fetchVendorScorecard = (id) => api(`/api/vendors/${id}/scorecard`);
 
 // Reviews
 export const submitReview = (data) => apiPost('/api/reviews', data);

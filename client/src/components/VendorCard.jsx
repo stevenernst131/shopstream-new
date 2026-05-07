@@ -1,10 +1,11 @@
 import React from 'react';
 import StarRating from './StarRating';
+import VendorScorecard from './VendorScorecard';
 
 const vgradClass = (id) => 'vgrad-' + ((id % 10) + 1);
 const fmtDate = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-export default function VendorCard({ vendor, onClick }) {
+export default function VendorCard({ vendor, onClick, scorecard }) {
   const v = vendor;
   return (
     <div className="vendor-card" onClick={onClick}>
@@ -16,6 +17,7 @@ export default function VendorCard({ vendor, onClick }) {
         <div className="vendor-stat"><strong>{Number(v.rating).toFixed(1)}</strong> ★ rating</div>
         <div className="vendor-stat">Joined {fmtDate(v.created_at)}</div>
       </div>
+      <VendorScorecard scorecard={scorecard} compact />
     </div>
   );
 }

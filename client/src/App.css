@@ -201,6 +201,40 @@ tr:hover td{background:var(--bg-hover)}
 .vgrad-4{background:linear-gradient(135deg,#f97316,#eab308)}
 .vgrad-5{background:linear-gradient(135deg,#8b5cf6,#6366f1)}
 .vgrad-6{background:linear-gradient(135deg,#22c55e,#10b981)}
+
+/* Vendor Scorecard */
+.scorecard-full{margin-top:20px;padding:16px 0;border-top:1px solid var(--border)}
+.scorecard-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.scorecard-title{font-size:15px;font-weight:700}
+.scorecard-export{font-size:12px;padding:5px 10px}
+.scorecard-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.scorecard-kpi{background:var(--bg-input);border-radius:var(--radius-sm);padding:12px}
+.scorecard-kpi-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.scorecard-kpi-value{font-size:20px;font-weight:700;display:flex;align-items:baseline;gap:4px}
+.scorecard-kpi-unit{font-size:12px;font-weight:400;color:var(--text-dim)}
+.scorecard-trend{font-size:14px;margin-left:4px}
+.trend-up{color:var(--green)}
+.trend-down{color:var(--red)}
+.trend-neutral{color:var(--text-muted)}
+.scorecard-benchmark{margin-top:8px}
+.scorecard-benchmark-bar{height:4px;background:var(--bg-hover);border-radius:2px;overflow:hidden}
+.scorecard-benchmark-fill{height:100%;border-radius:2px;transition:width .3s}
+.scorecard-benchmark-fill.trend-up{background:var(--green)}
+.scorecard-benchmark-fill.trend-down{background:var(--red)}
+.scorecard-benchmark-fill.trend-neutral{background:var(--text-muted)}
+.scorecard-benchmark-label{font-size:10px;color:var(--text-muted);margin-top:3px;display:block}
+.scorecard-summary{display:flex;gap:16px;font-size:13px;color:var(--text-dim)}
+.scorecard-summary-item strong{color:var(--text);font-weight:600}
+
+/* Compact scorecard (vendor cards) */
+.scorecard-compact{display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.scorecard-compact-item{flex:1;text-align:center}
+.scorecard-compact-label{display:block;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px}
+.scorecard-compact-value{display:block;font-size:13px;font-weight:600;margin-top:2px}
+.scorecard-trend-sm{font-size:11px;margin-left:2px}
+.scorecard-trend-sm.trend-up{color:var(--green)}
+.scorecard-trend-sm.trend-down{color:var(--red)}
+.scorecard-trend-sm.trend-neutral{color:var(--text-muted)}
 .vgrad-7{background:linear-gradient(135deg,#3b82f6,#6366f1)}
 .vgrad-8{background:linear-gradient(135deg,#14b8a6,#22c55e)}
 .vgrad-9{background:linear-gradient(135deg,#f59e0b,#f97316)}
