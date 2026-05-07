@@ -4,6 +4,8 @@ import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
 import Panel from '../components/Panel';
 import StarRating from '../components/StarRating';
+import { useCart } from '../context/CartContext';
+import { useToast } from '../components/Toast';
 
 const fmt = (cents) => '$' + (cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtNum = (n) => Number(n).toLocaleString('en-US');
@@ -118,6 +120,15 @@ export default function Products({ initialSearch }) {
 
 function ProductDetail({ data: { product: p, reviews }, categories }) {
   const catIcon = (categories.find((c) => c.id === p.category_id) || {}).icon || '📦';
+  const { addToCart } = useCart();
+  const toast = useToast();
+  const [qty, setQty] = useState(1);
+
+  const handleAdd = () => {
+    addToCart({ ...p, category_icon: catIcon }, qty);
+    toast.success(`${p.name} added to cart`);
+  };
+
   return (
     <>
       <div className={`product-img ${gradClass(p.id)}`} style={{ height: 200, borderRadius: 'var(--radius)', marginBottom: 16, fontSize: 64 }}>{catIcon}</div>
@@ -133,6 +144,25 @@ function ProductDetail({ data: { product: p, reviews }, categories }) {
         <span><strong>Rating:</strong> <StarRating rating={p.rating_avg} /> {Number(p.rating_avg).toFixed(1)} ({p.review_count})</span>
         <span><strong>Stock:</strong> <span className={`stock-badge ${stockClass(p.stock_qty)}`}>{stockLabel(p.stock_qty)}</span></span>
       </div>
+
+      {p.stock_qty > 0 && (
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 20 }}>
+          <div className="cart-item-controls">
+            <button className="qty-btn" onClick={() => setQty((q) => Math.max(1, q - 1))} disabled={qty <= 1}>−</button>
+            <span className="qty-value">{qty}</span>
+            <button className="qty-btn" onClick={() => setQty((q) => q + 1)}>+</button>
+          </div>
+          <button className="btn btn-primary" onClick={handleAdd} style={{ flex: 1, justifyContent: 'center' }}>
+            Add to Cart · {fmt(p.price_cents * qty)}
+          </button>
+        </div>
+      )}
+      {p.stock_qty <= 0 && (
+        <div style={{ marginBottom: 20 }}>
+          <button className="btn btn-ghost" disabled style={{ width: '100%', justifyContent: 'center' }}>Out of Stock</button>
+        </div>
+      )}
+
       <div style={{ fontSize: 13, color: 'var(--text-dim)', marginBottom: 20, lineHeight: 1.7 }}>{p.description || 'No description available.'}</div>
       <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>SKU: {p.sku || 'N/A'}</div>
       <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12 }}>Reviews ({reviews.length})</h3>

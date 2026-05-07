@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { page: 'analytics', icon: '◔', label: 'Analytics' },
 ];
 
-export default function Layout({ currentPage, onNavigate, onSearch, collapsed, onToggleSidebar, onToggleTheme, themeIcon, children }) {
+export default function Layout({ currentPage, onNavigate, onSearch, collapsed, onToggleSidebar, onToggleTheme, themeIcon, cartCount, onCartClick, children }) {
   const handleSearchKeyDown = (e) => {
     if (e.key === 'Enter') {
       const q = e.target.value.trim();
@@ -48,6 +48,10 @@ export default function Layout({ currentPage, onNavigate, onSearch, collapsed, o
             <input type="text" placeholder="Search products..." onKeyDown={handleSearchKeyDown} />
           </div>
           <button className="theme-btn" onClick={onToggleTheme} title="Toggle theme">{themeIcon}</button>
+          <button className="cart-btn" onClick={onCartClick} title="Shopping cart">
+            🛒
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          </button>
           <div className="avatar">AD</div>
         </header>
         <div className="content">
