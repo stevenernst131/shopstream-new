@@ -18,6 +18,25 @@ dependencies:
       - name: DATABASE_URL
         secret: true
         scope: all
+  stripe:
+    type: external
+    required: true
+    description: Stripe payment processing
+    provides:
+      - name: STRIPE_API_KEY
+        secret: true
+        scope: all
+      - name: STRIPE_WEBHOOK_SECRET
+        secret: true
+        scope: all
+  openai:
+    type: external
+    required: false
+    description: OpenAI API for product recommendations
+    provides:
+      - name: OPENAI_API_KEY
+        secret: true
+        scope: all
 
 static:
   spaFallback: true
