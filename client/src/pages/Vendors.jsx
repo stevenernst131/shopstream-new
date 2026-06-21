@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import useApi from '../hooks/useApi';
-import { fetchVendors, fetchVendor } from '../api';
+import { fetchVendors, fetchVendor, fetchVendorScorecards, fetchVendorScorecard } from '../api';
 import VendorCard from '../components/VendorCard';
+import VendorScorecard from '../components/VendorScorecard';
 import StarRating from '../components/StarRating';
 import Panel from '../components/Panel';
 
@@ -11,16 +12,24 @@ const vgradClass = (id) => 'vgrad-' + ((id % 10) + 1);
 
 export default function Vendors({ onShowProduct }) {
   const { data, loading, error, refresh } = useApi(fetchVendors);
+  const { data: scorecardData } = useApi(fetchVendorScorecards);
   const [panelOpen, setPanelOpen] = useState(false);
   const [panelData, setPanelData] = useState(null);
+  const [panelScorecard, setPanelScorecard] = useState(null);
 
   const showVendor = async (id) => {
     try {
-      const result = await fetchVendor(id);
+      const [result, sc] = await Promise.all([fetchVendor(id), fetchVendorScorecard(id)]);
       setPanelData(result);
+      setPanelScorecard(sc.scorecard);
       setPanelOpen(true);
     } catch {}
   };
+
+  const scorecardMap = {};
+  if (scorecardData?.scorecards) {
+    scorecardData.scorecards.forEach((s) => { scorecardMap[s.id] = s; });
+  }
 
   if (loading) return <div className="loading-screen"><div className="spinner" /><div>Loading...</div></div>;
   if (error) return (
@@ -35,17 +44,17 @@ export default function Vendors({ onShowProduct }) {
     <>
       <div className="vendor-grid">
         {data.vendors.map((v) => (
-          <VendorCard key={v.id} vendor={v} onClick={() => showVendor(v.id)} />
+          <VendorCard key={v.id} vendor={v} onClick={() => showVendor(v.id)} scorecard={scorecardMap[v.id]} />
         ))}
       </div>
       <Panel open={panelOpen} onClose={() => setPanelOpen(false)}>
-        {panelData && <VendorDetail data={panelData} />}
+        {panelData && <VendorDetail data={panelData} scorecard={panelScorecard} />}
       </Panel>
     </>
   );
 }
 
-function VendorDetail({ data: { vendor: v, products } }) {
+function VendorDetail({ data: { vendor: v, products }, scorecard }) {
   return (
     <>
       <div className={`vendor-avatar ${vgradClass(v.id)}`} style={{ width: 64, height: 64, fontSize: 28, borderRadius: 16, marginBottom: 16 }}>{v.name.charAt(0)}</div>
@@ -55,7 +64,8 @@ function VendorDetail({ data: { vendor: v, products } }) {
       <div style={{ display: 'flex', gap: 16, marginBottom: 20, fontSize: 13 }}>
         <span><strong>Rating:</strong> <StarRating rating={v.rating} /> {Number(v.rating).toFixed(1)}</span>
       </div>
-      <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12 }}>Products ({products.length})</h3>
+      <VendorScorecard scorecard={scorecard} />
+      <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, marginTop: 20 }}>Products ({products.length})</h3>
       {products.map((p) => (
         <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
           <div className={gradClass(p.id)} style={{ width: 40, height: 40, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>{p.category_name ? '' : '📦'}</div>
